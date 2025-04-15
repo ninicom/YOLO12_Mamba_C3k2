@@ -17,8 +17,6 @@ class PatchEmbedding(nn.Module):
             kernel_size=patch_size,
             stride=patch_size
         )
-        
-        self.pos_embed = None
 
     def forward(self, input_image):
         batch_size, _, height, width = input_image.shape
@@ -34,11 +32,6 @@ class PatchEmbedding(nn.Module):
         
         patches = rearrange(patches, 'b c h w -> b (h w) c')
         
-        if self.pos_embed is None or self.pos_embed.shape[1] != num_patches:
-            self.pos_embed = nn.Parameter(torch.zeros(1, num_patches, self.embed_dim))
-            nn.init.trunc_normal_(self.pos_embed, std=0.02)
-        
-        patches = patches + self.pos_embed
         return patches, height, width  # Trả thêm height, width gốc
 
 # Định nghĩa SSMBlock
